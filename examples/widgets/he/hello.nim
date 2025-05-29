@@ -41,6 +41,7 @@ method view(app: AppState): Widget =
           Label {.expand: false.}:
             text = "label!"
           HeButton {.expand: false, hAlign: AlignCenter.}:
+            icon = "emote-love-symbolic"
             text = "button!"
             is_pill = true
 
