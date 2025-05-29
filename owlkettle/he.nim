@@ -37,9 +37,11 @@ when defined(owlkettleDocs) and isMainModule:
   echo "Set the target libhelium version by passing `-d:heminor=<Minor Version>`."
   echo "\n\n"
 
-renderable HeWindow of BaseWindow:
+renderable HeWindow of Window:
   ## A Window that does not have a title bar.
   child: Widget
+  hasTitle: bool
+  hasBackButton: bool
   
   hooks:
     beforeBuild:
@@ -55,7 +57,15 @@ renderable HeWindow of BaseWindow:
       raise newException(ValueError, "Unable to add multiple children to a HeWindow. Use a Box widget to display multiple widgets in a HeWindow.")
     widget.hasChild = true
     widget.valChild = child
-  
+
+  hooks hasTitle:
+    property:
+      state.internalWidget.he_window_set_has_title state.hasTitle.cbool
+
+  hooks hasBackButton:
+    property:
+      state.internalWidget.he_window_set_has_back_button state.hasBackButton.cbool
+
   example:
     HeWindow:
       Box:
@@ -125,10 +135,17 @@ renderable HeApplicationWindow of Window:
           Label(text = "Main Content")
 
 
-renderable HeButton of BaseWidget:
-  icon: string
+renderable HeButton of Button:
   text: string
+  icon: string
+  color: HeColors
   is_pill: bool
+  is_fill: bool
+  is_tint: bool
+  is_iconic: bool
+  is_outline: bool
+  is_textual: bool
+  is_disclosure: bool
 
   hooks:
     beforeBuild:
@@ -141,10 +158,38 @@ renderable HeButton of BaseWidget:
   hooks icon:
     property:
       state.internalWidget.he_button_set_icon state.icon.cstring
-  
+
+  hooks color:
+    property:
+      state.internalWidget.he_button_set_color state.color
+
   hooks is_pill:
     property:
       state.internalWidget.he_button_set_is_pill state.is_pill.cbool
+
+  hooks is_fill:
+    property:
+      state.internalWidget.he_button_set_is_fill state.is_fill.cbool
+
+  hooks is_tint:
+    property:
+      state.internalWidget.he_button_set_is_tint state.is_tint.cbool
+
+  hooks is_iconic:
+    property:
+      state.internalWidget.he_button_set_is_iconic state.is_iconci.cbool
+
+  hooks is_outline:
+    property:
+      state.internalWidget.he_button_set_is_outline state.is_outline.cbool
+
+  hooks is_textual:
+    property:
+      state.internalWidget.he_button_set_is_textual state.is_textual.cbool
+
+  hooks is_disclosure:
+    property:
+      state.internalWidget.he_button_set_is_disclosure state.is_disclosure.cbool
 
 renderable HeViewMono of BaseWidget:
   title: Widget
@@ -166,9 +211,21 @@ renderable HeViewMono of BaseWidget:
     (build, update):
       state.updateChild(state.title, widget.valTitle, he_view_mono_set_title)
 
+  adder title:
+    if widget.hasTitle:
+      raise newException(ValueError, "Unable to add multiple title to a HeViewMono.")
+    widget.hasTitle = true
+    widget.valTitle = child
+
   hooks titlewidget:
     (build, update):
       state.updateChild(state.titlewidget, widget.valTitlewidget, he_view_mono_set_titlewidget)
+
+  adder titlewidget:
+    if widget.hasTitlewidget:
+      raise newException(ValueError, "Unable to add multiple titlewidget to a HeViewMono.")
+    widget.hasTitlewidget = true
+    widget.valTitlewidget = child
 
   hooks subtitle:
     property:
@@ -190,9 +247,21 @@ renderable HeViewMono of BaseWidget:
     (build, update):
       state.updateChild(state.stack, widget.valStack, he_view_mono_set_stack)
 
+  adder stack:
+    if widget.hasStack:
+      raise newException(ValueError, "Unable to add multiple stack to a HeViewMono.")
+    widget.hasStack = true
+    widget.valStack = child
+
   hooks scroller:
     (build, update):
       state.updateChild(state.scroller, widget.valScroller, he_view_mono_set_scroller)
+
+  adder scroller:
+    if widget.hasScroller:
+      raise newException(ValueError, "Unable to add multiple scroller to a HeViewMono.")
+    widget.hasScroller = true
+    widget.valScroller = child
 
   hooks hasMargins:
     property:
@@ -200,10 +269,11 @@ renderable HeViewMono of BaseWidget:
 
   hooks child:
     (build, update):
-      widget.valChild.assignApp state.app
       he_view_mono_append(state.internalWidget, widget.valChild.build().unwrapInternalWidget())
 
   adder add:
+    if widget.hasChild:
+      raise newException(ValueError, "Unable to add multiple children to a HeViewMono. Use a Box widget to display multiple widgets in a HeViewMono.")
     widget.hasChild = true
     widget.valChild = child
 
@@ -219,45 +289,17 @@ proc setupApp(config: HeAppConfig): WidgetState =
   
   result = setupApp(AppConfig(config))
 
-proc brew*(widget: Widget,
+proc heInnerBrew(id: cstring,
+           widget: Widget,
            icons: openArray[string] = [],
-           # colorScheme: ColorScheme = ColorSchemeDefault,
+           defaultAccent: HeRGBColor = HeRGBColor(r: 0.0.cdouble, g: 7.0.cdouble, b: 143.0.cdouble),
            startupEvents: openArray[ApplicationEvent] = [],
            shutdownEvents: openArray[ApplicationEvent] = [],
            stylesheets: openArray[Stylesheet] = []) =
   he_init()
-  let config = HeAppConfig(
-    widget: widget,
-    icons: @icons,
-    darkTheme: false,
-    # colorScheme: colorScheme,
-    stylesheets: @stylesheets
-  )
-  let state = setupApp(config)
-  
-  let context = AppContext[HeAppConfig](
-    config: config,
-    state: state,
-    startupEvents: @startupEvents,
-    shutdownEvents: @shutdownEvents
-  )
-  
-  context.execStartupEvents()
-  runMainloop(state)
-  context.execShutdownEvents()
-
-proc brew*(id: string,
-           widget: Widget,
-           icons: openArray[string] = [],
-           # colorScheme: ColorScheme = ColorSchemeDefault,
-           startupEvents: openArray[ApplicationEvent] = [],
-           shutdownEvents: openArray[ApplicationEvent] = [],
-           stylesheets: openArray[Stylesheet] = []) =
   var config = HeAppConfig(
     widget: widget,
     icons: @icons,
-    darkTheme: false,
-    # colorScheme: colorScheme,
     stylesheets: @stylesheets
   )
   
@@ -277,9 +319,8 @@ proc brew*(id: string,
     data[].state = state
     data[].execStartupEvents()
 
-  let app = he_application_new(id.cstring, G_APPLICATION_FLAGS_NONE)
-  let rgb_color = HeRGBColor(r: 0.0.cdouble, g: 7.0.cdouble, b: 143.0.cdouble)
-  he_application_set_default_accent_color(app, addr rgb_color)
+  let app = he_application_new(id, G_APPLICATION_FLAGS_NONE)
+  he_application_set_default_accent_color(app, addr defaultAccent)
   defer: g_object_unref(app.pointer)
   
   proc shutdownCallback(app: GApplication, data: ptr AppContext[HeAppConfig]) {.cdecl.} =
@@ -288,3 +329,21 @@ proc brew*(id: string,
   discard g_signal_connect(app, "activate", activateCallback, context.addr)
   discard g_signal_connect(app, "shutdown", shutdownCallback, context.addr)
   discard g_application_run(app)
+
+
+proc brew*(widget: Widget,
+           icons: openArray[string] = [],
+           defaultAccent: HeRGBColor = HeRGBColor(r: 0.0.cdouble, g: 7.0.cdouble, b: 143.0.cdouble),
+           startupEvents: openArray[ApplicationEvent] = [],
+           shutdownEvents: openArray[ApplicationEvent] = [],
+           stylesheets: openArray[Stylesheet] = []) =
+  heInnerBrew(nil.cstring, widget, icons, defaultAccent, startupEvents, shutdownEvents, stylesheets)
+
+proc brew*(id: string,
+           widget: Widget,
+           icons: openArray[string] = [],
+           defaultAccent: HeRGBColor = HeRGBColor(r: 0.0.cdouble, g: 7.0.cdouble, b: 143.0.cdouble),
+           startupEvents: openArray[ApplicationEvent] = [],
+           shutdownEvents: openArray[ApplicationEvent] = [],
+           stylesheets: openArray[Stylesheet] = []) =
+  heInnerBrew(id.cstring, widget, icons, defaultAccent, startupEvents, shutdownEvents, stylesheets)

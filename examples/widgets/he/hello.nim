@@ -33,10 +33,14 @@ method view(app: AppState): Widget =
       HeViewMono:
         showRightTitleButtons = true
 
-        Box(orient = OrientY):
-          Label:
+        Label {.title.}:
+          text = "Title Label!"
+          style = [StyleClass("view-title")]
+
+        Box(orient = OrientY, spacing = 4, margin = 16):
+          Label {.expand: false.}:
             text = "label!"
-          HeButton:
+          HeButton {.expand: false, hAlign: AlignCenter.}:
             text = "button!"
             is_pill = true
 
