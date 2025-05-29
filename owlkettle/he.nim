@@ -39,24 +39,12 @@ when defined(owlkettleDocs) and isMainModule:
 
 renderable HeWindow of Window:
   ## A Window that does not have a title bar.
-  child: Widget
   hasTitle: bool
   hasBackButton: bool
   
   hooks:
     beforeBuild:
       state.internalWidget = he_window_new()
-  
-  hooks child:
-    (build, update):
-      state.updateChild(state.child, widget.valChild, gtk_window_set_child)
-  
-  adder add:
-    ## Adds a child to the window surface. Each window surface may only have one child.
-    if widget.hasChild:
-      raise newException(ValueError, "Unable to add multiple children to a HeWindow. Use a Box widget to display multiple widgets in a HeWindow.")
-    widget.hasChild = true
-    widget.valChild = child
 
   hooks hasTitle:
     property:
@@ -105,13 +93,6 @@ renderable HeApplicationWindow of Window:
     property:
       state.internalWidget.he_application_window_set_has_back_button state.hasBackButton.cbool
 
-  adder add:
-    ## Adds a child to the window surface. Each window surface may only have one child.
-    if widget.hasChild:
-      raise newException(ValueError, "Unable to add multiple children to a HeWindow. Use a Box widget to display multiple widgets in a HeWindow.")
-    widget.hasChild = true
-    widget.valChild = child
-  
   example:
     HeApplicationWindow:
       Box:
@@ -177,7 +158,7 @@ renderable HeButton of Button:
 
   hooks is_iconic:
     property:
-      state.internalWidget.he_button_set_is_iconic state.is_iconci.cbool
+      state.internalWidget.he_button_set_is_iconic state.is_iconic.cbool
 
   hooks is_outline:
     property:

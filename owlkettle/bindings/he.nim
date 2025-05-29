@@ -113,8 +113,8 @@ proc he_button_get_text*(button: GtkWidget): cstring
 proc he_button_set_text*(button: GtkWidget, value: cstring)
 proc he_button_get_icon*(button: GtkWidget): cstring
 proc he_button_set_icon*(button: GtkWidget, value: cstring)
-proc he_button_get_color(button: GtkWidget): HeColors
-proc he_button_set_color(button: GtkWidget, value: HeColors)
+proc he_button_get_color*(button: GtkWidget): HeColors
+proc he_button_set_color*(button: GtkWidget, value: HeColors)
 proc he_button_get_is_pill*(button: GtkWidget): cbool
 proc he_button_set_is_pill*(button: GtkWidget, value: cbool)
 proc he_button_get_is_fill*(button: GtkWidget): cbool
