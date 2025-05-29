@@ -146,17 +146,78 @@ renderable HeButton of BaseWidget:
     property:
       state.internalWidget.he_button_set_is_pill state.is_pill.cbool
 
+renderable HeViewMono of BaseWidget:
+  title: Widget
+  titlewidget: Widget
+  subtitle: string
+  showRightTitleButtons: bool
+  showLeftTitleButtons: bool
+  showBack: bool
+  stack: Widget
+  scroller: Widget
+  hasMargins: bool
+  child: Widget
+
+  hooks:
+    beforeBuild:
+      state.internalWidget = he_view_mono_new(nil.GtkWidget, state.subtitle)
+
+  hooks title:
+    (build, update):
+      state.updateChild(state.title, widget.valTitle, he_view_mono_set_title)
+
+  hooks titlewidget:
+    (build, update):
+      state.updateChild(state.titlewidget, widget.valTitlewidget, he_view_mono_set_titlewidget)
+
+  hooks subtitle:
+    property:
+      state.internalWidget.he_view_mono_set_subtitle state.subtitle.cstring
+
+  hooks showRightTitleButtons:
+    property:
+      state.internalWidget.he_view_mono_set_show_right_title_buttons state.showRightTitleButtons.cbool
+
+  hooks showLeftTitleButtons:
+    property:
+      state.internalWidget.he_view_mono_set_show_left_title_buttons state.showLeftTitleButtons.cbool
+
+  hooks showBack:
+    property:
+      state.internalWidget.he_view_mono_set_show_back state.showBack.cbool
+
+  hooks stack:
+    (build, update):
+      state.updateChild(state.stack, widget.valStack, he_view_mono_set_stack)
+
+  hooks scroller:
+    (build, update):
+      state.updateChild(state.scroller, widget.valScroller, he_view_mono_set_scroller)
+
+  hooks hasMargins:
+    property:
+      state.internalWidget.he_view_mono_set_has_margins state.hasMargins.cbool
+
+  hooks child:
+    (build, update):
+      widget.valChild.assignApp state.app
+      he_view_mono_append(state.internalWidget, widget.valChild.build().unwrapInternalWidget())
+
+  adder add:
+    widget.hasChild = true
+    widget.valChild = child
+
+
 proc defaultStyleManager*(): StyleManager =
   result = he_style_manager_new()
 
 type HeAppConfig = object of AppConfig
-  # colorScheme: ColorScheme
 
-# proc setupApp(config: AdwAppConfig): WidgetState =
-#   let styleManager = adw_style_manager_get_default()
-#   adw_style_manager_set_color_scheme(styleManager, config.colorScheme)
-#   
-#   result = setupApp(AppConfig(config))
+proc setupApp(config: HeAppConfig): WidgetState =
+  let styleManager = he_style_manager_new()
+  he_style_manager_register(styleManager)
+  
+  result = setupApp(AppConfig(config))
 
 proc brew*(widget: Widget,
            icons: openArray[string] = [],
@@ -217,6 +278,8 @@ proc brew*(id: string,
     data[].execStartupEvents()
 
   let app = he_application_new(id.cstring, G_APPLICATION_FLAGS_NONE)
+  let rgb_color = HeRGBColor(r: 0.0.cdouble, g: 7.0.cdouble, b: 143.0.cdouble)
+  he_application_set_default_accent_color(app, addr rgb_color)
   defer: g_object_unref(app.pointer)
   
   proc shutdownCallback(app: GApplication, data: ptr AppContext[HeAppConfig]) {.cdecl.} =

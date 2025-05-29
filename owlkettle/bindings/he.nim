@@ -41,6 +41,10 @@ const HeVersion* = (HeMajor, HeMinor, HePatch)
 type
   StyleManager* = distinct pointer
   DynamicScheme* = distinct pointer
+  HeRGBColor* {.importc: "struct HeRGBColor", header: "libhelium-1.h".} = object
+    r*: cdouble
+    g*: cdouble
+    b*: cdouble
 
 {.push importc, cdecl.}
 # He
@@ -48,6 +52,9 @@ proc he_init*()
 
 # He.Application
 proc he_application_new*(application_id: cstring, flags: GApplicationFlags): GApplication
+
+proc he_application_get_default_accent_color*(app: GApplication): ptr HeRGBColor
+proc he_application_set_default_accent_color*(app: GApplication, value: ptr HeRGBColor)
 
 # He.StyleManager
 proc he_style_manager_new*(): StyleManager
@@ -57,7 +64,9 @@ proc he_style_manager_unregister*(manager: StyleManager)
 proc he_style_manager_get_user_base*(manager: StyleManager): GtkCssProvider
 proc he_style_manager_get_user_dark*(manager: StyleManager): GtkCssProvider
 proc he_style_manager_style_refresh*(manager: StyleManager, scheme_factory: DynamicScheme): cstring
+
 proc he_style_manager_weight_refresh*(manager: StyleManager, font_weight: cdouble): cstring
+
 proc he_style_manager_get_is_registered*(manager: StyleManager): cbool
 
 # He.Window
@@ -78,3 +87,28 @@ proc he_button_get_icon*(button: GtkWidget): cstring
 proc he_button_set_icon*(button: GtkWidget, value: cstring)
 proc he_button_get_is_pill*(button: GtkWidget): cbool
 proc he_button_set_is_pill*(button: GtkWidget, value: cbool)
+
+# He.ViewMono
+proc he_view_mono_new*(title: GtkWidget, subtitle: string): GtkWidget
+proc he_view_mono_add_titlebar_button*(viewmono: GtkWidget, child: GtkWidget)
+proc he_view_mono_add_titlebar_menu*(viewmono: GtkWidget, child: GtkWidget)
+proc he_view_mono_add_titlebar_toggle*(viewmono: GtkWidget, child: GtkWidget)
+proc he_view_mono_append*(viewmono: GtkWidget, child: GtkWidget)
+proc he_view_mono_get_title*(viewmono: GtkWidget): GtkWidget
+proc he_view_mono_set_title*(viewmono: GtkWidget, value: GtkWidget)
+proc he_view_mono_get_titlewidget*(viewmono: GtkWidget): GtkWidget
+proc he_view_mono_set_titlewidget*(viewmono: GtkWidget, value: GtkWidget)
+proc he_view_mono_get_subtitle*(viewmono: GtkWidget): cstring
+proc he_view_mono_set_subtitle*(viewmono: GtkWidget, value: cstring)
+proc he_view_mono_get_show_right_title_buttons*(viewmono: GtkWidget): cbool
+proc he_view_mono_set_show_right_title_buttons*(viewmono: GtkWidget, value: cbool)
+proc he_view_mono_get_show_left_title_buttons*(viewmono: GtkWidget): cbool
+proc he_view_mono_set_show_left_title_buttons*(viewmono: GtkWidget, value: cbool)
+proc he_view_mono_get_show_back*(viewmono: GtkWidget): cbool
+proc he_view_mono_set_show_back*(viewmono: GtkWidget, value: cbool)
+proc he_view_mono_get_stack*(viewmono: GtkWidget): GtkWidget
+proc he_view_mono_set_stack*(viewmono: GtkWidget, value: GtkWidget)
+proc he_view_mono_get_scroller*(viewmono: GtkWidget): GtkWidget
+proc he_view_mono_set_scroller*(viewmono: GtkWidget, value: GtkWidget)
+proc he_view_mono_get_has_margins*(viewmono: GtkWidget): cbool
+proc he_view_mono_set_has_margins*(viewmono: GtkWidget, value: cbool)

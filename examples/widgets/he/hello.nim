@@ -20,8 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import owlkettle, owlkettle/[playground, he]
-import std/options
+import owlkettle, owlkettle/he
 
 viewable App:
   discard
@@ -31,11 +30,14 @@ method view(app: AppState): Widget =
     HeApplicationWindow:
       title = "Meow!"
 
-      Box(orient = OrientY):
-        Label:
-          text = "label!"
-        HeButton:
-          text = "button!"
-          is_pill = true
+      HeViewMono:
+        showRightTitleButtons = true
+
+        Box(orient = OrientY):
+          Label:
+            text = "label!"
+          HeButton:
+            text = "button!"
+            is_pill = true
 
 he.brew(gui(App()))
