@@ -33,16 +33,13 @@ method view(app: AppState): Widget =
       HeViewMono:
         showRightTitleButtons = true
 
-        Label {.title.}:
-          text = "Title Label!"
-          style = [StyleClass("view-title")]
+        HeViewTitle(label = "HeViewTitle") {.title.}
 
         Box(orient = OrientY, spacing = 4, margin = 16):
           Label {.expand: false.}:
             text = "label!"
           HeButton {.expand: false, hAlign: AlignCenter.}:
             icon = "emote-love-symbolic"
-            text = "button!"
             is_pill = true
 
 he.brew(gui(App()))

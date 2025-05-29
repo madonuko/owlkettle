@@ -38,7 +38,6 @@ when defined(owlkettleDocs) and isMainModule:
   echo "\n\n"
 
 renderable HeWindow of Window:
-  ## A Window that does not have a title bar.
   hasTitle: bool
   hasBackButton: bool
   
@@ -77,7 +76,6 @@ renderable HeWindow of Window:
           Label(text = "Main Content")
 
 renderable HeApplicationWindow of Window:
-  ## A Window that does not have a title bar.
   hasTitle: bool
   hasBackButton: bool
 
@@ -172,6 +170,17 @@ renderable HeButton of Button:
     property:
       state.internalWidget.he_button_set_is_disclosure state.is_disclosure.cbool
 
+renderable HeViewTitle of BaseWidget:
+  label: string
+
+  hooks:
+    beforeBuild:
+      state.internalWidget = he_view_title_new()
+
+  hooks label:
+    property:
+      state.internalWidget.he_view_title_set_label state.label.string
+
 renderable HeViewMono of BaseWidget:
   title: Widget
   titlewidget: Widget
@@ -192,21 +201,20 @@ renderable HeViewMono of BaseWidget:
     (build, update):
       state.updateChild(state.title, widget.valTitle, he_view_mono_set_title)
 
-  adder title:
-    if widget.hasTitle:
-      raise newException(ValueError, "Unable to add multiple title to a HeViewMono.")
-    widget.hasTitle = true
-    widget.valTitle = child
-
   hooks titlewidget:
     (build, update):
       state.updateChild(state.titlewidget, widget.valTitlewidget, he_view_mono_set_titlewidget)
 
-  adder titlewidget:
-    if widget.hasTitlewidget:
-      raise newException(ValueError, "Unable to add multiple titlewidget to a HeViewMono.")
-    widget.hasTitlewidget = true
-    widget.valTitlewidget = child
+  adder title:
+    if widget.hasTitle or widget.hasTitlewidget:
+      raise newException(ValueError, "Unable to add multiple titles to a HeViewMono.")
+    let c = child.build().unwrapInternalWidget()
+    if c.g_type_check_instance_is_a(g_type_from_name("GtkLabel")).bool or c.g_type_check_instance_is_a(g_type_from_name("HeViewMono")).bool:
+      widget.hasTitle = true
+      widget.valTitle = child
+    else:
+      widget.hasTitlewidget = true
+      widget.valTitlewidget = child
 
   hooks subtitle:
     property:

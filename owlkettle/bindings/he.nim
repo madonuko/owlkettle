@@ -154,3 +154,8 @@ proc he_view_mono_get_scroller*(viewmono: GtkWidget): GtkWidget
 proc he_view_mono_set_scroller*(viewmono: GtkWidget, value: GtkWidget)
 proc he_view_mono_get_has_margins*(viewmono: GtkWidget): cbool
 proc he_view_mono_set_has_margins*(viewmono: GtkWidget, value: cbool)
+
+# He.ViewTitle
+proc he_view_title_new*(): GtkWidget
+proc he_view_title_get_label*(viewtitle: GtkWidget): cstring
+proc he_view_title_set_label*(viewtitle: GtkWidget, value: cstring)

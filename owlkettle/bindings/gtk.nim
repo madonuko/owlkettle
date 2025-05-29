@@ -407,6 +407,7 @@ proc g_object_weak_ref*(obj: pointer, notify: proc (data, oldObjectPtr: pointer)
 proc g_object_unref*(obj: pointer)
 proc g_object_is_floating*(obj: pointer): cbool
 proc g_object_set_property*(obj: pointer, name: cstring, value: ptr GValue)
+proc g_type_check_instance_is_a*(instance: auto, iface_type: GType): cbool
 proc g_type_fundamental*(id: GType): GType
 
 # GObject.Value
