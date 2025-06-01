@@ -181,6 +181,10 @@ renderable HeViewTitle of BaseWidget:
     property:
       state.internalWidget.he_view_title_set_label state.label.string
 
+let
+  gTypeGtkLabel = g_type_from_name("GtkLabel")
+  gTypeHeViewMono = g_type_from_name("HeViewMono")
+
 renderable HeViewMono of BaseWidget:
   title: Widget
   titlewidget: Widget
@@ -208,8 +212,11 @@ renderable HeViewMono of BaseWidget:
   adder title:
     if widget.hasTitle or widget.hasTitlewidget:
       raise newException(ValueError, "Unable to add multiple titles to a HeViewMono.")
-    let c = child.build().unwrapInternalWidget()
-    if c.g_type_check_instance_is_a(g_type_from_name("GtkLabel")).bool or c.g_type_check_instance_is_a(g_type_from_name("HeViewMono")).bool:
+    let
+      c = child.build().unwrapInternalWidget()
+      isLabel = bool c.g_type_check_instance_is_a gTypeGtkLabel
+      isViewMono = bool c.g_type_check_instance_is_a gTypeHeViewMono
+    if isLabel or isViewMono:
       widget.hasTitle = true
       widget.valTitle = child
     else:
