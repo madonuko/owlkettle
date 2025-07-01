@@ -117,7 +117,7 @@ renderable HeApplicationWindow of Window:
 renderable HeButton of Button:
   text: string
   icon: string
-  color: HeColors
+  color: HeButtonColor
   is_pill: bool
   is_fill: bool
   is_tint: bool
