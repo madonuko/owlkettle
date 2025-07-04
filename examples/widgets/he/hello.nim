@@ -39,13 +39,19 @@ method view(app: AppState): Widget =
           HeViewChooser {.expand: false.}:
             Label(text = "lbl1")
 
-          HeDropDown {.expand: false.}:
-            entries = @["apple", "grapes", "blueberries"]
+          # HeDropDown {.expand: false.}:
+          #   entries = @["apple", "grapes", "blueberries"]
 
           Label {.expand: false.}:
             text = "label!"
           HeButton {.expand: false, hAlign: AlignCenter.}:
             icon = "emote-love-symbolic"
             is_pill = true
+
+          HeEmptyPage:
+            title = "empty title"
+            description = "description alsd;kfjda;lskjfdl;saf"
+            icon = "emote-love-symbolic"
+            buttonText = "btn in empty?"
 
 he.brew(gui(App()))

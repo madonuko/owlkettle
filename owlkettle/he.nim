@@ -334,6 +334,31 @@ renderable HeDropdown of BaseWidget:
     read:
       state.active = $he_dropdown_get_active(state.internalWidget)
 
+renderable HeEmptyPage of BaseWidget:
+  title: string
+  description: string
+  icon: string
+  buttonText: string
+
+  hooks:
+    beforeBuild:
+      state.internalWidget = he_empty_page_new()
+
+  hooks title:
+    property:
+      state.internalWidget.he_empty_page_set_title state.title.cstring
+
+  hooks description:
+    property:
+      state.internalWidget.he_empty_page_set_description state.description.cstring
+
+  hooks icon:
+    property:
+      state.internalWidget.he_empty_page_set_icon state.icon.cstring
+
+  hooks buttonText:
+    property:
+      state.internalWidget.he_empty_page_set_button state.buttonText.cstring
 
 proc defaultStyleManager*(): StyleManager =
   result = he_style_manager_new()
