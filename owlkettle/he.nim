@@ -26,7 +26,7 @@ when defined(nimPreviewSlimSystem):
   import std/assertions
 import widgetdef, widgets, mainloop, widgetutils, common
 import ./bindings/[he, gtk]
-import std/[strutils, sequtils, strformat, options, sugar]
+import std/[strutils, sequtils, strformat, options, sugar, tables]
 
 export he.StyleManager
 export he.HeVersion
@@ -272,6 +272,67 @@ renderable HeViewMono of BaseWidget:
       raise newException(ValueError, "Unable to add multiple children to a HeViewMono. Use a Box widget to display multiple widgets in a HeViewMono.")
     widget.hasChild = true
     widget.valChild = child
+
+renderable HeViewChooser of BaseWidget:
+  # FIXME: text does not show
+  views: Table[string, Widget]
+
+  hooks:
+    beforeBuild:
+      state.internalWidget = he_view_chooser_new()
+      he_view_chooser_set_stack(state.internalWidget, gtk_stack_new())
+
+  hooks views:
+    (build, update):
+      if widget.hasViews:
+        for name, view in widget.valViews:
+          view.assignApp(state.app)
+
+        let stack = he_view_chooser_get_stack(state.internalWidget)
+
+        for name, view in state.views:
+          if name notin widget.valViews:
+            gtk_stack_remove(stack, view.unwrapInternalWidget())
+
+        for name, viewWidget in widget.valViews:
+          if name in state.views:
+            let
+              view = state.views[name]
+              newView = viewWidget.update(view)
+            if not newView.isNil:
+              gtk_stack_remove(stack, view.unwrapInternalWidget())
+              gtk_stack_add_named(stack, newView.unwrapInternalWidget(), name.cstring)
+              state.views[name] = newView
+          else:
+            let view = viewWidget.build()
+            gtk_stack_add_named(stack, view.unwrapInternalWidget(), name.cstring)
+            state.views[name] = view
+
+  adder add {.name: "main".}:
+    if name in widget.valViews:
+      raise newException(ValueError, "View \"" & name & "\" already exists")
+    widget.hasViews = true
+    widget.valViews[name] = child
+
+renderable HeDropdown of BaseWidget:
+  entries: seq[string]
+  # TODO: how to make this read-only
+  active: string
+
+  hooks:
+    beforeBuild:
+      state.internalWidget = he_dropdown_new()
+
+  hooks entries:
+    (build, update):
+      he_dropdown_remove_all(state.internalWidget)
+      for s in widget.valEntries:
+        # FIXME: this line runs forever
+        he_dropdown_append(state.internalWidget, s.cstring)
+
+  hooks active:
+    read:
+      state.active = $he_dropdown_get_active(state.internalWidget)
 
 
 proc defaultStyleManager*(): StyleManager =

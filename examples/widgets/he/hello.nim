@@ -36,6 +36,12 @@ method view(app: AppState): Widget =
         HeViewTitle(label = "HeViewTitle") {.title.}
 
         Box(orient = OrientY, spacing = 4, margin = 16):
+          HeViewChooser {.expand: false.}:
+            Label(text = "lbl1")
+
+          HeDropDown {.expand: false.}:
+            entries = @["apple", "grapes", "blueberries"]
+
           Label {.expand: false.}:
             text = "label!"
           HeButton {.expand: false, hAlign: AlignCenter.}:

@@ -1768,20 +1768,20 @@ proc he_divider_set_is_vertical*(self: GtkWidget, value: cint)
 proc he_divider_new*(): GtkWidget
 proc he_divider_construct*(object_type_v: GType): pointer
 proc he_dropdown_get_type*(): GType
-proc he_dropdown_get_active_id*(self: GtkWidget): pointer
-proc he_dropdown_set_active_id*(self: GtkWidget, value: pointer)
+proc he_dropdown_get_active_id*(self: GtkWidget): cstring
+proc he_dropdown_set_active_id*(self: GtkWidget, value: cstring)
 proc he_dropdown_get_max_width_chars*(self: GtkWidget): cint
 proc he_dropdown_set_max_width_chars*(self: GtkWidget, value: cint)
 proc he_dropdown_get_ellipsize*(self: GtkWidget): PangoEllipsizeMode
 proc he_dropdown_set_ellipsize*(self: GtkWidget, value: PangoEllipsizeMode)
-proc he_dropdown_get_dropdown*(self: GtkWidget): pointer
-proc he_dropdown_set_dropdown*(self: GtkWidget, value: pointer)
+proc he_dropdown_get_dropdown*(self: GtkWidget): GtkWidget
+proc he_dropdown_set_dropdown*(self: GtkWidget, value: GtkWidget)
 proc he_dropdown_new*(): GtkWidget
 proc he_dropdown_construct*(object_type_v: GType): pointer
-proc he_dropdown_append*(self: GtkWidget, text: pointer)
-proc he_dropdown_get_active*(self: GtkWidget): pointer
-proc he_dropdown_insert*(self: GtkWidget, position: cint, text: pointer)
-proc he_dropdown_prepend*(self: GtkWidget, text: pointer)
+proc he_dropdown_append*(self: GtkWidget, text: cstring)
+proc he_dropdown_get_active*(self: GtkWidget): OwnedGtkString
+proc he_dropdown_insert*(self: GtkWidget, position: cint, text: cstring)
+proc he_dropdown_prepend*(self: GtkWidget, text: cstring)
 proc he_dropdown_remove*(self: GtkWidget, position: cint)
 proc he_dropdown_remove_all*(self: GtkWidget)
 proc he_empty_page_get_type*(): GType
@@ -2160,8 +2160,8 @@ proc he_view_aux_set_show_aux*(self: GtkWidget, value: cint)
 proc he_view_aux_new*(): GtkWidget
 proc he_view_aux_construct*(object_type_v: GType): pointer
 proc he_view_chooser_get_type*(): GType
-proc he_view_chooser_get_stack*(self: GtkWidget): pointer
-proc he_view_chooser_set_stack*(self: GtkWidget, value: pointer)
+proc he_view_chooser_get_stack*(self: GtkWidget): GtkWidget
+proc he_view_chooser_set_stack*(self: GtkWidget, value: GtkWidget)
 proc he_view_chooser_new*(): GtkWidget
 proc he_view_chooser_construct*(object_type_v: GType): pointer
 proc he_view_chooser_stack_clear*(self: GtkWidget)

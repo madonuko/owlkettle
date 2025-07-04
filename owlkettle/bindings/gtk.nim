@@ -986,6 +986,7 @@ when GtkMinor >= 10:
   proc gtk_search_entry_set_placeholder_text*(widget: GtkWidget, text: cstring)
 
 # Gtk.Stack
+proc gtk_stack_new*(): GtkWidget
 proc gtk_stack_add_named*(stack, child: GtkWidget, name: cstring)
 proc gtk_stack_remove*(stack, child: GtkWidget)
 
