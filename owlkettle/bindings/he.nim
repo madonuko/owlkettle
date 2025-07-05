@@ -1724,29 +1724,29 @@ proc he_date_picker_construct_with_format*(
 proc he_date_picker_new*(): GtkWidget
 proc he_date_picker_construct*(object_type_v: GType): pointer
 proc he_dialog_get_type*(): GType
-proc he_dialog_get_visible*(self: GtkWidget): cint
-proc he_dialog_set_visible*(self: GtkWidget, value: cint)
+proc he_dialog_get_visible*(self: GtkWidget): cbool
+proc he_dialog_set_visible*(self: GtkWidget, value: cbool)
 proc he_dialog_get_title*(self: GtkWidget): pointer
 proc he_dialog_set_title*(self: GtkWidget, value: pointer)
 proc he_dialog_get_info*(self: GtkWidget): pointer
 proc he_dialog_set_info*(self: GtkWidget, value: pointer)
 proc he_dialog_get_icon*(self: GtkWidget): pointer
 proc he_dialog_set_icon*(self: GtkWidget, value: pointer)
-proc he_dialog_get_secondary_button*(self: GtkWidget): pointer
-proc he_dialog_set_secondary_button*(self: GtkWidget, value: pointer)
-proc he_dialog_get_primary_button*(self: GtkWidget): pointer
-proc he_dialog_set_primary_button*(self: GtkWidget, value: pointer)
-proc he_dialog_add*(self: GtkWidget, widget: pointer)
+proc he_dialog_get_secondary_button*(self: GtkWidget): GtkWidget
+proc he_dialog_set_secondary_button*(self: GtkWidget, value: GtkWidget)
+proc he_dialog_get_primary_button*(self: GtkWidget): GtkWidget
+proc he_dialog_set_primary_button*(self: GtkWidget, value: GtkWidget)
+proc he_dialog_add*(self: GtkWidget, widget: GtkWidget)
 proc he_dialog_present*(self: GtkWidget)
 proc he_dialog_hide_dialog*(self: GtkWidget)
 proc he_dialog_new*(
-  parent: pointer,
-  title: pointer,
-  info: pointer,
-  icon: pointer,
-  primary_button: pointer,
-  secondary_button: pointer,
-): pointer
+  parent: GtkWidget,
+  title: cstring,
+  info: cstring,
+  icon: cstring,
+  primary_button: GtkWidget,
+  secondary_button: GtkWidget,
+): GtkWidget
 
 proc he_dialog_construct*(
   object_type_v: GType,

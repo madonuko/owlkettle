@@ -126,9 +126,15 @@ renderable HeButton of Button:
   is_textual: bool
   is_disclosure: bool
 
+  proc toggled(active: bool)
+
   hooks:
     beforeBuild:
       state.internalWidget = he_button_new(state.icon.cstring, state.text.cstring)
+    connectEvents:
+      state.connect(state.toggled, "toggled", eventCallback)
+    disconnectEvents:
+      state.internalWidget.disconnect(state.toggled)
 
   hooks text:
     property:
@@ -265,12 +271,14 @@ renderable HeViewMono of BaseWidget:
 
   hooks child:
     (build, update):
-      he_view_mono_append(state.internalWidget, widget.valChild.build().unwrapInternalWidget())
+      if not widget.hasChild:
+        he_view_mono_append(state.internalWidget, widget.valChild.build().unwrapInternalWidget())
+        widget.hasChild = true
 
   adder add:
     if widget.hasChild:
       raise newException(ValueError, "Unable to add multiple children to a HeViewMono. Use a Box widget to display multiple widgets in a HeViewMono.")
-    widget.hasChild = true
+    # widget.hasChild = true
     widget.valChild = child
 
 renderable HeViewChooser of BaseWidget:
@@ -359,6 +367,106 @@ renderable HeEmptyPage of BaseWidget:
   hooks buttonText:
     property:
       state.internalWidget.he_empty_page_set_button state.buttonText.cstring
+
+# renderable HeSwitch of BaseWidget:
+#   left_icon: string
+#   right_icon: string
+#
+#   # copy stuff from renderable Switch
+#   state: bool
+#
+#   proc changed(state: bool)
+#
+#   hooks:
+#     beforeBuild:
+#       state.internalWidget = he_switch_new()
+#     connectEvents:
+#       proc stateSetCallback(widget: GtkWidget, state: cbool, data: ptr EventObj[proc (state: bool)]): cbool {.cdecl.} =
+#         logExceptions:
+#           let state = state != 0
+#           SwitchState(data[].widget).state = state
+#           data[].callback(state)
+#           data[].redraw()
+#       
+#       state.connect(state.changed, "state-set", stateSetCallback)
+#     disconnectEvents:
+#       state.internalWidget.disconnect(state.changed)
+#
+#   hooks state:
+#     property:
+#       gtk_switch_set_active(state.internalWidget.iswitch, cbool(ord(state.state)))
+
+let gTypeHeButton = g_type_from_name("HeButton")
+
+#[
+renderable HeDialog of BaseWidget:
+  title: string
+  info: string
+  icon: string
+  primaryButton: Widget
+  secondaryButton: Widget
+  child: Widget
+
+  hooks:
+    beforeBuild:
+      state.internalWidget = gtk_window_new(GTK_WINDOW_TOPLEVEL) # create dummy for now
+    afterBuild:
+      let root = state.internalWidget.gtk_widget_get_toplevel
+      if not root.gtk_widget_is_toplevel.bool:
+        raise newException(ValueError, "cannot get toplevel widget")
+      state.internalWidget = he_dialog_new(
+        state.internalWidget.gtk_widget_get_toplevel,
+        state.title.cstring,
+        state.info.cstring,
+        state.icon.cstring,
+        state.primaryButton.unwrapInternalWidget,
+        state.secondaryButton.unwrapInternalWidget
+      )
+
+  hooks title:
+    property:
+      state.internalWidget.he_dialog_set_title(state.title.cstring)
+
+  hooks info:
+    property:
+      state.internalWidget.he_dialog_set_info(state.info.cstring)
+
+  hooks icon:
+    property:
+      state.internalWidget.he_dialog_set_icon(state.icon.cstring)
+
+  hooks primaryButton:
+    (build, update):
+      state.updateChild(state.primaryButton, widget.valPrimaryButton, he_dialog_set_primary_button)
+
+  hooks secondaryButton:
+    (build, update):
+      state.updateChild(state.secondaryButton, widget.valSecondaryButton, he_dialog_set_secondary_button)
+
+  adder primaryButton:
+    if widget.hasPrimaryButton:
+      raise newException(ValueError, "Unable to add multiple primary buttons to a HeDialog.")
+    # if not bool child.build.unwrapInternalWidget.g_type_check_instance_is_a gTypeHeButton:
+    #   raise newException(ValueError, "{.primaryButton.} must be HeButton.")
+    widget.hasPrimaryButton = true
+    widget.valPrimaryButton = child
+
+  adder secondaryButton:
+    if widget.hasSecondaryButton:
+      raise newException(ValueError, "Unable to add multiple secondary buttons to a HeDialog.")
+    # if not bool child.build.unwrapInternalWidget.g_type_check_instance_is_a gTypeHeButton:
+    #   raise newException(ValueError, "{.secondaryButton.} must be HeButton.")
+    widget.hasSecondaryButton = true
+    widget.valSecondaryButton = child
+
+  hooks child:
+    (build, update):
+      state.updateChild(state.child, widget.valChild, he_dialog_add)
+
+  adder add:
+    widget.hasChild = true
+    widget.valChild = child
+]#
 
 proc defaultStyleManager*(): StyleManager =
   result = he_style_manager_new()

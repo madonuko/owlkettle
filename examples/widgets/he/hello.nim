@@ -48,10 +48,18 @@ method view(app: AppState): Widget =
             icon = "emote-love-symbolic"
             is_pill = true
 
+            # HeDialog(title = "HeDialog", info = "description."):
+            #   HeButton {.primaryButton.}:
+            #     text = "another button!"
+
           HeEmptyPage:
             title = "empty title"
             description = "description alsd;kfjda;lskjfdl;saf"
             icon = "emote-love-symbolic"
             buttonText = "btn in empty?"
+
+          # HeSwitch:
+          #   proc changed(state: bool) =
+          #     echo $state
 
 he.brew(gui(App()))
