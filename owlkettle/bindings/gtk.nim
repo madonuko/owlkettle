@@ -692,6 +692,7 @@ proc gtk_widget_get_allocation*(widget: GtkWidget, alloc: ptr GdkRectangle)
 proc gtk_widget_set_tooltip_text*(widget: GtkWidget, tooltip: cstring)
 proc gtk_widget_set_has_tooltip*(widget: GtkWidget, hasTooltip: cbool)
 proc gtk_widget_get_first_child*(widget: GtkWidget): GtkWidget
+proc gtk_widget_get_last_child*(widget: GtkWidget): GtkWidget
 proc gtk_widget_get_name*(widget: GtkWidget): cstring
 proc gtk_widget_measure*(widget: GtkWidget, orient: GtkOrientation, size: cint, min, natural, minBaseline, naturalBaseline: ptr cint)
 
