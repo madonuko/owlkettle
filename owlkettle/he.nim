@@ -201,7 +201,7 @@ renderable HeViewMono of BaseWidget:
   stack: Widget
   scroller: Widget
   hasMargins: bool
-  child: Widget
+  child: Widget = nil
 
   hooks:
     beforeBuild:
@@ -276,9 +276,8 @@ renderable HeViewMono of BaseWidget:
         widget.hasChild = true
 
   adder add:
-    if widget.hasChild:
+    if not widget.valChild.isNil:
       raise newException(ValueError, "Unable to add multiple children to a HeViewMono. Use a Box widget to display multiple widgets in a HeViewMono.")
-    # widget.hasChild = true
     widget.valChild = child
 
 renderable HeViewChooser of BaseWidget:
