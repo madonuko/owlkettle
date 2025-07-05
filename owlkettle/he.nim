@@ -271,6 +271,8 @@ renderable HeViewMono of BaseWidget:
 
   hooks child:
     (build, update):
+      # HACK: need to check there are no other children
+      # FIXME: can we allow multiple children anyway?
       if state.internalWidget.gtk_widget_get_last_child.gtk_widget_get_last_child.gtk_widget_get_first_child.isNil:
         he_view_mono_append(state.internalWidget, widget.valChild.build().unwrapInternalWidget())
 
@@ -466,6 +468,28 @@ renderable HeDialog of BaseWidget:
     widget.hasChild = true
     widget.valChild = child
 ]#
+
+renderable HeAppBar of BaseWidget:
+  is_compact: bool
+  showLeftTitleButtons: bool
+  showRightTitleButtons: bool
+
+  hooks:
+    beforeBuild:
+      state.internalWidget = he_app_bar_new()
+
+  hooks is_compact:
+    property:
+      state.internalWidget.he_app_bar_set_is_compact state.is_compact.cbool
+
+  hooks showRightTitleButtons:
+    property:
+      state.internalWidget.he_app_bar_set_show_right_title_buttons state.showRightTitleButtons.cbool
+
+  hooks showLeftTitleButtons:
+    property:
+      state.internalWidget.he_app_bar_set_show_left_title_buttons state.showLeftTitleButtons.cbool
+
 
 proc defaultStyleManager*(): StyleManager =
   result = he_style_manager_new()

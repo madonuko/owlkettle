@@ -36,6 +36,8 @@ method view(app: AppState): Widget =
         HeViewTitle(label = "HeViewTitle") {.title.}
 
         Box(orient = OrientY, spacing = 4, margin = 16):
+          HeAppBar(showRightTitleButtons = true)
+
           HeViewChooser {.expand: false.}:
             Label(text = "lbl1")
 
