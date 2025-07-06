@@ -30,6 +30,8 @@ import std/[strutils, sequtils, strformat, options, sugar, tables]
 
 export he.StyleManager
 export he.HeVersion
+export he.HeCardType
+export he.HeCardLayout
 
 when defined(owlkettleDocs) and isMainModule:
   echo "# Libhelium Widgets\n\n"
