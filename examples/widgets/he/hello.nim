@@ -46,9 +46,6 @@ method view(app: AppState): Widget =
 
           Label {.expand: false.}:
             text = "label!"
-          HeButton {.expand: false, hAlign: AlignCenter.}:
-            icon = "emote-love-symbolic"
-            is_pill = true
 
             # HeDialog(title = "HeDialog", info = "description."):
             #   HeButton {.primaryButton.}:
@@ -63,5 +60,23 @@ method view(app: AppState): Widget =
           # HeSwitch:
           #   proc changed(state: bool) =
           #     echo $state
+
+          HeMiniContentBlock:
+            title = "title"
+            subtitle = "subtitle"
+            icon = "emote-love-symbolic"
+            
+            HeButton:
+              icon = "emote-love-symbolic"
+              is_pill = true
+
+          HeContentBlock:
+            title = "title"
+            subtitle = "subtitle"
+            icon = "emote-love-symbolic"
+            
+            HeButton:
+              icon = "emote-love-symbolic"
+              is_pill = true
 
 he.brew(gui(App()))

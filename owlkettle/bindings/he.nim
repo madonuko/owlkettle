@@ -1561,21 +1561,21 @@ proc he_card_get_subtitle*(self: GtkWidget): pointer
 proc he_card_set_subtitle*(self: GtkWidget, value: pointer)
 proc he_card_get_icon*(self: GtkWidget): pointer
 proc he_card_set_icon*(self: GtkWidget, value: pointer)
-proc he_card_set_gicon*(self: GtkWidget, value: pointer)
-proc he_card_set_paintable*(self: GtkWidget, value: pointer)
-proc he_card_get_widget*(self: GtkWidget): pointer
-proc he_card_set_widget*(self: GtkWidget, value: pointer)
-proc he_card_get_secondary_button*(self: GtkWidget): pointer
-proc he_card_set_secondary_button*(self: GtkWidget, value: pointer)
-proc he_card_get_primary_button*(self: GtkWidget): pointer
-proc he_card_set_primary_button*(self: GtkWidget, value: pointer)
+proc he_card_set_gicon*(self: GtkWidget, value: GIcon)
+proc he_card_set_paintable*(self: GtkWidget, value: GtkWidget)
+proc he_card_get_widget*(self: GtkWidget): GtkWidget
+proc he_card_set_widget*(self: GtkWidget, value: GtkWidget)
+proc he_card_get_secondary_button*(self: GtkWidget): GtkWidget
+proc he_card_set_secondary_button*(self: GtkWidget, value: GtkWidget)
+proc he_card_get_primary_button*(self: GtkWidget): GtkWidget
+proc he_card_set_primary_button*(self: GtkWidget, value: GtkWidget)
 proc he_card_new*(
-  title: pointer,
-  subtitle: pointer,
-  icon: pointer,
-  primary_button: pointer,
-  secondary_button: pointer,
-): pointer
+  title: cstring,
+  subtitle: cstring,
+  icon: cstring,
+  primary_button: GtkWidget,
+  secondary_button: GtkWidget,
+): GtkWidget
 
 proc he_card_construct*(
   object_type_v: GType,
@@ -1608,9 +1608,9 @@ proc he_content_block_new*(
   title: pointer,
   subtitle: pointer,
   icon: pointer,
-  primary_button: pointer,
-  secondary_button: pointer,
-): pointer
+  primary_button: GtkWidget,
+  secondary_button: GtkWidget,
+): GtkWidget
 
 proc he_content_block_construct*(
   object_type_v: GType,

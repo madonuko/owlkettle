@@ -490,6 +490,100 @@ renderable HeAppBar of BaseWidget:
     property:
       state.internalWidget.he_app_bar_set_show_left_title_buttons state.showLeftTitleButtons.cbool
 
+renderable HeCard of BaseWidget:
+  card_type: HeCardType
+  layout: HeCardLayout
+  title: string
+  subtitle: string
+  icon: string
+  gicon: GIcon
+  paintable: Widget
+  widget: Widget
+  secondaryButton: Widget
+  primaryButton: Widget
+
+  hooks:
+    beforeBuild:
+      state.internalWidget = he_card_new(nil.cstring, nil.cstring, nil.cstring, nil.GtkWidget, nil.GtkWidget)
+      # he_card_new_horizontal?
+
+  hooks card_type:
+    property:
+      state.internalWidget.he_card_set_card_type state.card_type
+
+  hooks layout:
+    property:
+      state.internalWidget.he_card_set_layout state.layout
+
+  hooks title:
+    property:
+      state.internalWidget.he_card_set_title state.title.cstring
+
+  hooks subtitle:
+    property:
+      state.internalWidget.he_card_set_subtitle state.subtitle.cstring
+
+  hooks icon:
+    property:
+      state.internalWidget.he_card_set_icon state.icon.cstring
+
+  hooks gicon:
+    (update, build):
+      state.internalWidget.he_card_set_gicon state.gicon      
+
+  hooks paintable:
+    (build, update):
+      state.updateChild(state.paintable, widget.valPaintable, he_card_set_paintable)
+
+  hooks widget:
+    (build, update):
+      state.updateChild(state.widget, widget.valWidget, he_card_set_widget)
+
+  hooks secondaryButton:
+    (build, update):
+      state.updateChild(state.secondaryButton, widget.valSecondaryButton, he_card_set_secondary_button)
+
+  hooks primaryButton:
+    (build, update):
+      state.updateChild(state.primaryButton, widget.valPrimaryButton, he_card_set_primary_button)
+
+  adder paintable:
+    if widget.hasPaintable:
+      raise newException(ValueError, "Unable to add multiple paintables to a HeCard.")
+    widget.hasPaintable = true
+    widget.valPaintable = child
+
+  adder add:
+    if widget.hasWidget:
+      raise newException(ValueError, "Unable to add multiple widgets to a HeCard.")
+    widget.hasWidget = true
+    widget.valWidget = child
+
+  adder secondaryButton:
+    if widget.hasSecondaryButton:
+      raise newException(ValueError, "Unable to add multiple secondary buttons to a HeCard.")
+    widget.hasSecondaryButton = true
+    widget.valSecondaryButton = child
+
+  adder primaryButton:
+    if widget.hasPrimaryButton:
+      raise newException(ValueError, "Unable to add multiple primary buttons to a HeCard.")
+    widget.hasPrimaryButton = true
+    widget.valPrimaryButton = child
+
+renderable HeMiniContentBlock of HeCard:
+  hooks:
+    beforeBuild:
+      state.internalWidget = he_mini_content_block_new()
+      state.layout = HeCardLayoutHorizontal
+      # FIXME: make the inner widget look better…?
+      state.internalWidget.gtk_widget_get_last_child.gtk_widget_get_last_child.gtk_widget_set_halign GTK_ALIGN_END
+
+renderable HeContentBlock of HeCard:
+  hooks:
+    beforeBuild:
+      state.internalWidget = he_content_block_new(nil.cstring, nil.cstring, nil.cstring, nil.GtkWidget, nil.GtkWidget)
+
 
 proc defaultStyleManager*(): StyleManager =
   result = he_style_manager_new()
