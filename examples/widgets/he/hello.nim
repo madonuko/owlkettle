@@ -41,7 +41,7 @@ method view(app: AppState): Widget =
           HeViewChooser {.expand: false.}:
             Label(text = "lbl1")
 
-          # HeDropDown {.expand: false.}:
+          # HeDropdown {.expand: false.}:
           #   entries = @["apple", "grapes", "blueberries"]
 
           Label {.expand: false.}:
@@ -69,6 +69,7 @@ method view(app: AppState): Widget =
             HeButton:
               icon = "emote-love-symbolic"
               is_pill = true
+              color = HeButtonColorSecondary
 
           HeContentBlock:
             title = "title"
@@ -78,5 +79,7 @@ method view(app: AppState): Widget =
             HeButton:
               icon = "emote-love-symbolic"
               is_pill = true
+              color = HeButtonColorTertiary
+              custom_color = HeColorsOrange
 
 he.brew(gui(App()))

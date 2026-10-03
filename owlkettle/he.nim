@@ -32,6 +32,8 @@ export he.StyleManager
 export he.HeVersion
 export he.HeCardType
 export he.HeCardLayout
+export he.HeColors
+export he.HeButtonColor
 
 when defined(owlkettleDocs) and isMainModule:
   echo "# Libhelium Widgets\n\n"
@@ -120,6 +122,7 @@ renderable HeButton of Button:
   text: string
   icon: string
   color: HeButtonColor
+  custom_color: HeColors
   is_pill: bool
   is_fill: bool
   is_tint: bool
@@ -149,6 +152,10 @@ renderable HeButton of Button:
   hooks color:
     property:
       state.internalWidget.he_button_set_color state.color
+
+  hooks custom_color:
+    property:
+      state.internalWidget.he_button_set_custom_color state.custom_color
 
   hooks is_pill:
     property:
